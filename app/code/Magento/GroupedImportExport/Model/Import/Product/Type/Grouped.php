@@ -90,16 +90,16 @@ class Grouped extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abs
                     ++$position;
                     $associatedSkuAndQty = explode(self::SKU_QTY_DELIMITER, $associatedSkuAndQty);
                     $associatedSku = isset($associatedSkuAndQty[0]) ? trim($associatedSkuAndQty[0]) : null;
-                    if (isset($newSku[$associatedSku])) {
-                        $linkedProductId = $newSku[$associatedSku][$this->getProductEntityIdentifierField()];
-                    } elseif (isset($oldSku[$associatedSku])) {
-                        $linkedProductId = $oldSku[$associatedSku][$this->getProductEntityIdentifierField()];
+                    if (isset($newSku[strtolower($associatedSku)])) {
+                        $linkedProductId = $newSku[$strtolower(associatedSku)][$this->getProductEntityIdentifierField()];
+                    } elseif (isset($oldSku[strtolower($associatedSku)])) {
+                        $linkedProductId = $oldSku[strtolower($associatedSku)][$this->getProductEntityIdentifierField()];
                     } else {
                         continue;
                     }
                     $scope = $this->_entityModel->getRowScope($rowData);
                     if (Product::SCOPE_DEFAULT == $scope) {
-                        $productData = $newSku[$rowData[Product::COL_SKU]];
+                        $productData = $newSku[strtolower($rowData[Product::COL_SKU])];
                     } else {
                         $colAttrSet = Product::COL_ATTR_SET;
                         $rowData[$colAttrSet] = $productData['attr_set_code'];
@@ -115,13 +115,12 @@ class Grouped extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abs
                         'product_link_attribute_id' => $attributes['position']['id'],
                         'value' => $position
                     ];
-                    if ($qty) {
-                        $linksData['attr_product_ids'][$productId] = true;
-                        $linksData['qty']["{$productId} {$linkedProductId}"] = [
-                            'product_link_attribute_id' => $attributes['qty']['id'],
-                            'value' => $qty
-                        ];
-                    }
+
+                    $linksData['attr_product_ids'][$productId] = true;
+                    $linksData['qty']["{$productId} {$linkedProductId}"] = [
+                        'product_link_attribute_id' => $attributes['qty']['id'],
+                        'value' => $qty
+                    ];
                 }
             }
             $this->links->saveLinksData($linksData);
