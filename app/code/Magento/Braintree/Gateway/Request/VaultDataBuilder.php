@@ -30,7 +30,7 @@ class VaultDataBuilder implements BuilderInterface
     {
         return [
             self::OPTIONS => [
-                self::STORE_IN_VAULT_ON_SUCCESS => true
+                self::STORE_IN_VAULT_ON_SUCCESS => false
             ]
         ];
     }
